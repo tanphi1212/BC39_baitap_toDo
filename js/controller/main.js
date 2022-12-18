@@ -55,7 +55,10 @@ getToDoList()
 getEle('addItem').onclick = ()=>{
     const name = getEle('newTask').value;
     console.log(name);
-
+    if(!name){
+        alert('nhập nội dung công việc');
+        return;
+    }
     const task = new ToDo('',name,"not yet");
     callApi.callApi('','POST',task)
     .then((result) => {
@@ -112,9 +115,33 @@ window.changeStatus = changeStatus;
     callApi.callApi('',"GET")
     .then((rs) => {
         let data = rs.data;
-        console.log(data)
+        let byName = data.slice(0);
+        byName.sort((a,b)=>{
+            let x = a.name.toLowerCase();
+            let y = b.name.toLowerCase();
+            return x < y ? -1 : x > y ? 1 : 0;
+        });
+        renderHTML(byName);
     })
     .catch((err) => {
+        console.log(err)
+    })
+ }
 
+ // sort Z to A 
+ getEle("three").onclick = () => {
+    callApi.callApi('',"GET")
+    .then((rs) => {
+        let data = rs.data;
+        let byName = data.slice(0);
+        byName.sort((a,b)=>{
+            let x = b.name.toLowerCase();
+            let y = a.name.toLowerCase();
+            return x < y ? -1 : x > y ? 1 : 0;
+        });
+        renderHTML(byName);
+    })
+    .catch((err) => {
+        console.log(err)
     })
  }
